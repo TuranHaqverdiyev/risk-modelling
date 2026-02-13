@@ -28,7 +28,7 @@ jobs:
       - name: Install system build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake pkg-config build-essential
+          sudo apt-get install -y cmake pkg-config build-essential g++ python3-dev
 
       - name: Install dependencies
         run: uv sync --frozen
