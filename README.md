@@ -1,6 +1,6 @@
 # Credit Modelling
 
-[![CI/CD](https://github.com/TuranHaqverdiyev/Credit-Modelling/actions/workflows/ci.yml/badge.svg)](https://github.com/TuranHaqverdiyev/Credit-Modelling/actions/workflows/ci.yml)
+[![CI/CD](https://github.com/TuranHaqverdiyev/risk-modelling/actions/workflows/ci.yml/badge.svg)](https://github.com/TuranHaqverdiyev/risk-modelling/actions/workflows/ci.yml)
 
 End-to-End Credit Risk Modelling Project
 
