@@ -1,0 +1,25 @@
+
+# MinIO Configuration
+# NOTE (MRM-F2): Actual credentials MUST be set via environment variables.
+# These are template defaults only — never commit real secrets here.
+minio:
+  endpoint: ${MINIO_ENDPOINT:-http://localhost:9000}
+  access_key: ${MINIO_ACCESS_KEY:-minioadmin}
+  secret_key: ${MINIO_SECRET_KEY:-minioadmin}
+  bucket: ${MINIO_BUCKET:-credit-risk}
+
+  paths:
+    raw: raw/
+    processed: processed/
+    outputs: outputs/
+    monitoring: monitoring/
+
+# Experiment Tracking
+mlflow:
+  tracking_uri: ${MLFLOW_TRACKING_URI:-http://localhost:5000}
+  experiment_base: ABB-credit-risk
+
+# General Settings
+project:
+  name: ABB-credit-risk
+  environment: dev

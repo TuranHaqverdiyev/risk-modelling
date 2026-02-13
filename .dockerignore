@@ -1,0 +1,29 @@
+# Ignore Python cache and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Ignore git and editor files
+.git/
+.gitignore
+*.swp
+*.swo
+
+# Ignore notebooks, tests, and outputs
+notebooks/
+tests/
+data/
+outputs/
+
+# Ignore local environment and config
+.env
+.env.*
+
+# Ignore Docker files
+Dockerfile*
+
+# Ignore MLflow DB and CI config
+mlflow.db
+.github/

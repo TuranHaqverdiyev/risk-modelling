@@ -1,0 +1,82 @@
+# Feature Configuration for Credit Risk Model
+iv_thresholds:
+  min: 0.02  # iv < 0.02: Not predictive
+  # Composite features (e.g. weighted_risk_score IV=0.74, compound_risk_product IV=0.60)
+  # legitimately exceed 0.5 because they aggregate multiple features.
+  max: 1.0
+
+# Weight of Evidence (WoE) transformation settings
+woe:
+  bins: 5  # Number of quantile bins for WoE calculation
+  
+
+# Composite feature settings
+
+# Composite feature calculations for reference
+
+# 1. compound_risk:
+#    - weighted_risk_score: 0.30*bureau_risk + 0.25*dti_risk + 0.30*dpd_risk + 0.15*inq_risk
+#    - compound_risk_product: bureau_risk * (1 + dti_risk) * (1 + dpd_risk) * (1 + inq_risk)
+#    - risk_flag_count: sum(high_dti, low_bureau, recent_dpd, high_inq, short_tenure)
+# 2. delinquency:
+#    - dpd_time_decay_score: dpd_3m*1.0 + dpd_6m*0.7 + dpd_12m*0.5 + dpd_24m*0.3
+#    - dpd_composite_risk: 0.4*(decay_score/90) + 0.3*(severity/14) + 0.3*recency_risk
+#    - dpd_severity_score: ever_90dpd*10 + ever_60dpd*3 + ever_30dpd*1
+#    - dpd_recovery_score: months_since_last_dpd / (max_dpd_ever + 1)
+# 3. affordability:
+#    - affordability_risk_score: 0.4*post_loan_dti + 0.4*iti + 0.2*(1-buffer)
+#    - post_loan_dti: (current_obligation + new_installment) / monthly_income
+#    - income_coverage_ratio: monthly_income / (new_installment + 1)
+
+
+
+
+
+# Priority features for model training 
+priority_features:
+  # Compound Risk Scores 
+  compound_risk:
+    - weighted_risk_score    # Formula: 0.3*bureau + 0.25*dti + 0.3*dpd + 0.15*inq
+    - compound_risk_product   # Formula: bureau * (1+dti) * (1+dpd) * (1+inq)
+    - risk_flag_count        # Formula: Sum of triggered binary risk triggers
+
+  # Delinquency Risk
+  dpd_risk:
+    - dpd_time_decay_score  # Formula: 1.0*3m + 0.7*6m + 0.5*12m + 0.3*24m DPD
+    - dpd_composite_risk   # Formula: Combined Decay + Severity + Recency
+    - dpd_severity_score   # Formula: 10*90d + 3*60d + 1*30d flags
+    - dpd_recovery_score   # Formula: Months clean / (Max DPD + 1)
+    - dpd_trend            # Formula: DPD_24m - DPD_3m (Cleaning up)
+    - dpd_recency_risk     # Formula: exp(-months_since_last_dpd / 12)
+
+  # Affordability Stress 
+  affordability:
+    - affordability_risk_score # Formula: Weighted combination of DTI, ITI, and Buffer
+    - iti_headroom             # Formula: 0.50 - Current Installment-to-Income
+    - income_coverage_ratio    # Formula: Monthly Income / (New Installment + 1)
+    - post_loan_dti            # Formula: (Existing Debt + New) / Income
+    - affordability_buffer     # Formula: Residual Income / Monthly Income
+    - residual_income          # Formula: Monthly Income - All Obligations
+
+  # Bureau Score Transformations
+  bureau_transformed:
+    - bureau_risk_weight  # Map scores to default-rate weights (1.0 - 3.3)
+    - bureau_percentile   # Relative rank within population
+    - bureau_z_score      # Standardized deviation from mean
+
+  # Credit Seeking Behavior
+  inquiry_risk:
+    - credit_desperation_index # Formula: 0.4*velocity + 0.4*intensity + 0.2*cash_ratio
+    - inquiry_velocity         # Formula: inq_3m / (inq_12m + 1)
+    - inquiry_trend            # Formula: inq_3m - inq_prev_avg
+  
+
+# Features to explicitly exclude 
+exclude_features:
+  - application_id
+
+# Target variable configuration
+target:
+  name: "default_90p_12m"
+  description: "90+ days past due within 12 months (1=default, 0=non-default)"
+  positive_class: 1  

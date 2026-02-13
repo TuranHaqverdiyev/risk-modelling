@@ -1,0 +1,29 @@
+# Cost Configuration for Credit Risk Model
+
+
+costs:
+  # Cost of False Negative (FN): Approving a defaulter
+  false_negative: 10
+  
+  # Cost of False Positive (FP): Rejecting a good customer
+  false_positive: 1
+
+
+# Threshold optimization settings
+threshold:
+  # Default threshold for binary classification
+  default: 0.5
+  
+  # Range for cutoff analysis
+  min: 0.05
+  max: 0.95
+  step: 0.05
+
+# Expected Loss calculation
+# EL = COST_FN * FN + COST_FP * FP
+loss:
+  # Loss Given Default (as fraction)
+  lgd: 0.45
+  
+  # Average Exposure at Default 
+  avg_ead: 50000
