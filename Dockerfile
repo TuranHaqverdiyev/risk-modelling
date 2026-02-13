@@ -4,13 +4,9 @@ FROM python:3.10.12-slim AS builder
 # 1. Install uv from the official binary
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# 2. System deps (only needed for building)
+# 2. System deps 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    pkg-config \
-    g++ \
-    python3-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -19,7 +15,7 @@ WORKDIR /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-dev
+    uv sync --frozen --no-install-project --no-dev --no-build
 
 #Final Production Stage
 FROM python:3.10.12-slim
